@@ -2,9 +2,11 @@
 import BrowserOnly from '@docusaurus/BrowserOnly'
 import React, { FC, memo, useEffect, useRef, useState } from 'react'
 import './index.css'
+import { downloadDrawioFile } from './utils/download'
 
 interface DrawioProps {
   content: string
+  urlContent: string
   /** page to be displayed */
   page?: number
   /** I don't know the meaning of this configuration，the default value is false */
@@ -69,6 +71,7 @@ interface DrawioProps {
 
 const Drawio: FC<DrawioProps> = ({
   content,
+  urlContent,
   maxHeight,
   autoFit,
   autoCrop,
@@ -94,6 +97,13 @@ const Drawio: FC<DrawioProps> = ({
     if (!content) {
       setTip('drawio file is empty')
       return
+    }
+
+    if (urlContent) {
+      // Download the file
+      downloadDrawioFile(urlContent).then((contentFile) => {
+        content = contentFile
+      })
     }
 
     const data = {
